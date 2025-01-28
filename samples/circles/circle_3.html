@@ -1,0 +1,387 @@
+<html>
+<head>
+
+<script>
+function det(a,b) {
+ return a[0] *b[1] - a[1] * b[0];
+}
+
+
+var richtungX = 1;
+var richtungY = 1;
+var winkel = (58.6) / 180 * Math.PI;
+var distanz = 150;
+var r = 10;
+
+var swap = false;
+
+class Point{
+	constructor(x,y) {
+		this.x = x;
+		this.y = y;
+	}
+}
+
+
+
+function bounce( angle ,clockwise, addAngle  ) {
+	let a = addAngle || 0;
+	return (angle+addAngle) +  (clockwise ? (Math.PI/2):-(Math.PI/2))
+}
+
+
+
+
+function checkIntersection() {
+	let cvs = document.getElementById('cvs');
+	let ctx = cvs.getContext('2d');
+	dx_1 = line.x2 - line.x1
+	dx_2 = line_point.x2 - line_point.x1
+	m1 = (line.y2 - line.y1) / dx_1
+	m2 = (line_point.y2 - line_point.y1) / dx_2
+	n1 = line.y1 - (m1*line.x1)
+	n2 = line_point.y1 - (m2*line_point.x1)
+	x = (n2-n1)/(m1-m2)
+	y = (m1*x+n1)
+
+
+	b1 = Math.min(line_point.x1,line_point.x2) < x && Math.max(line_point.x1,line_point.x2) > x
+	b2 = Math.min(line_point.y1,line_point.y2) < y && Math.max(line_point.y1,line_point.y2) > y
+
+	bx1 = Math.min(line.x1,line.x2) < x && Math.max(line.x1,line.x2) > x
+	bx2 = Math.min(line.y1,line.y2) < y && Math.max(line.y1,line.y2) > y
+
+
+	if(b1 && b2 && bx1 && bx2) {
+		ctx.beginPath();
+		ctx.arc(x,y,20,0,2*Math.PI)
+		ctx.stroke()
+		debugger;
+		
+		return {x:x,y:y};
+
+	}
+	return false;
+}
+
+class Line {
+	constructor(x1,y1,x2,y2) {
+		this.x1 = x1;
+		this.y1 = y1;
+		this.x2 = x2;
+		this.y2 = y2;
+		
+		this.angle = 0;
+		
+		let a = x2 - x1;
+		let b = y2 - y1;
+		let c = Math.sqrt( Math.pow(a,2)  +Math.pow(b,2) );
+		this.angle = Math.asin(  a / c );
+		//this.angle = Math.asin(this.angle);
+	}
+}
+
+var pt = new Point(150,100);
+var pt_old = pt;
+
+var line = new Line( 300,300, 350, 400 );
+var line_point = new Line( 300,300, 350, 400 );;
+
+
+
+
+
+function checkObstacle(  pt, angle, dist, direction ) {
+	let cvs = document.getElementById('cvs');
+	let w = cvs.width;
+	let h = cvs.height;
+	//pt_old = new Point( pt.x, pt.y);;
+	//let old_dist = dist
+
+	
+	let	y_dist_o = Math.sin( angle ) * dist;
+	let	x_dist_o = Math.cos( angle ) * dist;
+
+	
+	let col = false;
+	let d_n = 0;
+
+	
+
+	let x_dist = Math.cos( angle ) * dist;
+	let y_dist = Math.sin( angle ) * dist;
+	
+	
+	
+	
+
+	// rechter rand
+		if( pt.x + x_dist + r   > w) {
+
+		y_dist = Math.sin( angle ) * (w - (pt.x+r));
+		x_dist = Math.cos( angle ) * (w - (pt.x+r));
+		
+
+		direction[0] *= -1;
+		angle = angle + (Math.PI/2) *direction[1];
+		col = true;
+
+	}	
+
+	if( pt.y + (y_dist + r)   <0 ) {
+		y_dist = Math.sin( angle ) * (pt.y-r);
+		x_dist = Math.cos( angle ) * (pt.y-r);
+		col = true;
+
+		
+		direction[1] *= -1;
+		angle = angle + (Math.PI/2) *direction[0];
+
+	
+	}
+	
+	
+
+	if( pt.x + (x_dist + r)   <0 ) {
+		y_dist = Math.sin( angle ) * (pt.x-r);
+		x_dist = Math.cos( angle ) * (pt.x-r);
+	
+		col = true;
+
+		direction[0] *= -1;
+
+		angle = angle + (Math.PI/2) *-direction[1];		
+
+	
+		
+		
+	}	
+		
+	if(col) {
+		return { winkel:angle, x_dist: x_dist, y_dist:y_dist, direction: direction, distance: Math.sqrt( Math.pow(y_dist,2 ) +Math.pow(x_dist,2 ) ) };
+	}
+	
+	return false;
+	
+
+}
+
+
+function movePoint( ) {
+	let cvs = document.getElementById('cvs');
+	let w = cvs.width;
+	let h = cvs.height;
+	pt_old = new Point( pt.x, pt.y);;
+	let old_dist = distanz;
+	
+	let x_dist = Math.cos( winkel ) * distanz;
+	let y_dist = Math.sin( winkel ) * distanz;
+	
+	
+	let	y_dist_o = Math.sin( winkel ) * distanz;
+	let	x_dist_o = Math.cos( winkel ) * distanz;
+
+	
+	let col = false;
+	let d_n = 0;
+	
+	let obst = checkObstacle( pt, winkel, distanz, [richtungX,richtungY] );
+	if(obst) {
+	debugger;
+	}
+
+	// unterer rand
+	if( pt.y + y_dist + r   > h) {
+		y_dist = Math.sin( winkel ) * (h - (pt.y+r));
+		x_dist = Math.cos( winkel ) * (h - (pt.y+r));
+		richtungY *= -1;
+		winkel = winkel + (Math.PI/2) *-richtungX;
+
+		col = true;
+		
+
+		
+			
+
+	}
+
+	// rechter rand
+		if( pt.x + x_dist + r   > w) {
+
+		y_dist = Math.sin( winkel ) * (w - (pt.x+r));
+		x_dist = Math.cos( winkel ) * (w - (pt.x+r));
+		
+
+		richtungX *= -1;
+		winkel = winkel + (Math.PI/2) *richtungY;
+		col = true;
+
+	}	
+
+	if( pt.y + (y_dist + r)   <0 ) {
+		y_dist = Math.sin( winkel ) * (pt.y-r);
+		x_dist = Math.cos( winkel ) * (pt.y-r);
+		col = true;
+
+		
+		richtungY *= -1;
+		winkel = winkel + (Math.PI/2) *richtungX;
+
+	
+	}
+	
+	
+
+	if( pt.x + (x_dist + r)   <0 ) {
+		y_dist = Math.sin( winkel ) * (pt.x-r);
+		x_dist = Math.cos( winkel ) * (pt.x-r);
+	
+		col = true;
+
+		richtungX *= -1;
+
+		winkel = winkel + (Math.PI/2) *-richtungY;		
+
+	
+		
+		
+	}	
+		
+	
+	if( col ) {
+	
+		d_n= Math.sqrt( Math.pow(y_dist,2 ) +Math.pow(x_dist,2 ) ) ;
+		
+		
+		
+		pt.x = pt.x+x_dist;
+		pt.y = pt.y+y_dist;
+	//	debugger;
+		line_point = new Line( pt_old.x, pt_old.y , pt.x, pt.y );
+		
+		drawPoint({col: "#ff00ff"});
+		pt_old = new Point(pt.x, pt.y)
+	
+		if(Math.abs( obst.winkel ) == 0|| Math.abs( obst.winkel ) == Math.PI || Math.abs( obst.winkel ) == Math.PI/2 || Math.abs( obst.winkel ) == Math.PI / 4) {
+			debugger;
+			winkel = obst.winkel * -1;
+		}
+	
+	
+		let x = pt.x + Math.cos( winkel ) * (distanz - d_n);
+		let y = pt.y + Math.sin( winkel ) * (distanz - d_n);
+		pt.x = x;
+		pt.y = y;
+		line_point = new Line( pt_old.x, pt_old.y , pt.x, pt.y );
+		drawPoint();
+		return;
+	
+	}
+
+		
+	if(!swap) {
+		let x = pt.x + Math.cos( winkel ) * (swap ? distanz/2:distanz);
+		let y = pt.y + Math.sin( winkel ) * (swap ? distanz/2:distanz);
+		pt.x = x;
+		pt.y = y;
+
+	
+		line_point = new Line( pt_old.x, pt_old.y , pt.x, pt.y );
+
+	}
+		
+	
+}
+
+function drawPoint(obj) {
+
+	if(!obj) {
+		obj = { col : "#D1D1D1" }
+	}
+	let cvs = document.getElementById('cvs');
+	let ctx = cvs.getContext('2d');
+	
+	let w = cvs.width;
+	let h = cvs.height;
+	
+//	ctx.clearRect(0 ,0 , w, h)
+	ctx.beginPath();
+	
+	ctx.fillStyle= obj.col || "#FF0000"
+	//ctx.fillStyle=;
+
+	ctx.arc( pt.x, pt.y , r, 0 , 2*Math.PI);
+	
+	ctx.fill();
+
+	ctx.setLineDash([20,20]);
+	ctx.lineDashOffset =  0 ;
+	ctx.moveTo( line_point.x1, line_point.y1 );
+	ctx.lineTo( line_point.x2, line_point.y2 );
+	ctx.stroke();
+	
+	
+	//winkel += 0.02;
+}
+
+
+var arr = [];
+
+
+function getDistance( x2, x1, y2, y1 ) {
+	return Math.sqrt( Math.pow(x2-x1,2) + Math.pow(y2-y1,2));
+}
+
+function getAngleAlpha( x2, x1, y2, y1 ) {
+	let c = getDistance( x2,x1,y2,y1);
+	let alpha = Math.asin( Math.abs(y2-y1) / c );
+
+	debugger;
+
+	return alpha;
+
+}
+
+window.onload = function() {
+
+	let cvs = document.getElementById("cvs");
+
+	
+
+
+	window.setInterval( function() {
+		let b = checkIntersection();
+		if(b) {
+			a = bounce(winkel, true, 45/180*Math.PI);
+		//	richtungX = b.direction[0];
+		//	richtungY = b.direction[1];
+			pt.x = b.x;
+			pt.y = b.y;
+			
+			winkel=a;
+		}
+		drawPoint();
+
+		
+		movePoint();
+	}, 250);
+	
+//	let cvs = document.getElementById('cvs');
+	let ctx = cvs.getContext("2d");
+	ctx.moveTo( line.x1, line.y1 );
+	ctx.lineTo( line.x2, line.y2 );
+	ctx.stroke();
+	cvs.onclick = function(e)  {
+		debugger;
+	}
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<canvas width="1000" height="500" id="cvs" style="background-color:#ffff00;"></canvas>
+</body></html>
