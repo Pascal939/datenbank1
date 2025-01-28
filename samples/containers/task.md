@@ -12,7 +12,7 @@ let containers = [
 ]
 ```
 
-##### Aufgabe: 
+##### Aufgabe 1: 
 
 Sortiere die Container im Array `containers` so,
 dass ein neues mehrdimensionales Array entsteht und dort
@@ -26,4 +26,35 @@ Sortiere das Array so, dass am Ende 3 Arrays mit den jeweiligen ordnungsgemaß s
 
 Bezeichne die Arrays wie folgt: `one` `two` `three`
 
+##### Aufgabe 3:
 
+Stelle dir das Spiel `Türme von Hanoi` vor.
+
+![https://shorturl.at/7EBUi](https://shorturl.at/7EBUi)
+
+
+Das zu verwendende Array hat diesen Aufbau
+
+```
+let towers = [
+ [{w: 1}, null, null],
+ [{w: 2}, null, null],
+ [{w: 3}, null, null],
+]
+```
+
+Alle Elemente des Turms befinden sich in Zeile 0 (links), 
+Ziel ist es, dass der Turm in Zeile 1 (mitte) neu aufgebaut wird. 
+
+```
+let towers = [
+ [null, {w: 1}, null],
+ [null, {w: 2}, null],
+ [null, {w: 3}, null],
+]
+```
+
+
+##### Aufgabe 4:
+
+Versuche diese Erkenntnisse auf die ursprüngliche Containeraufgabe anzuwenden.
