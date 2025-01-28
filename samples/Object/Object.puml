@@ -1,0 +1,14 @@
+@startuml
+top to bottom direction
+class Object {
+	assign()
+	create()
+	entries()
+	keys()
+	values()
+}
+
+
+
+@enduml
+	
