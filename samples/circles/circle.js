@@ -35,7 +35,34 @@ function onMouseClick(evt) {
 		let delta_x = arrayOfCircles[p - 1].x - arrayOfCircles[p - 2].x
 		let delta_y = arrayOfCircles[p - 1].y - arrayOfCircles[p - 2].y
 		
-		arrayOfCircles.push( new Circle( arrayOfCircles[p - 1].x + delta_x, arrayOfCircles[p - 1].y + delta_y))
+		let newX = arrayOfCircles[p - 1].x + delta_x
+		let newY = arrayOfCircles[p - 1].y + delta_y
+		
+		
+		// Linke Seite
+		if( newX <= 0 ) {
+			newX = -newX
+		}
+		
+		// Rechte Seite
+		if( newX >= canvas.width ) {
+			newX = 2 * canvas.width - newX
+		}
+		
+		// Oben
+		if( newY <= 0 ) {
+			newY = -newY
+		}
+		
+		//Unten
+		if( newY >= canvas.height ) {
+			newY = 2 * canvas.height - newY
+		}
+		
+		let circle = new Circle( newX, newY )
+		arrayOfCircles.push( circle )
+		
+		
 	}
 	
 	drawCircles()
@@ -47,6 +74,7 @@ function drawCircles() {
 	
 	ctx.clearRect(0,0,canvas.width, canvas.height )
 	
+	
 	arrayOfCircles.forEach( circle => {
 		ctx.beginPath()
 		ctx.fillStyle = circle.color
@@ -54,6 +82,6 @@ function drawCircles() {
 		ctx.arc( circle.x, circle.y , circle.r , 0 , 2*Math.PI)
 		ctx.fill()
 	})
-	
+
 	
 }
