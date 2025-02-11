@@ -1,0 +1,24 @@
+@startuml
+top to bottom direction
+class Object {
+
+}
+
+
+class Shape {
+	draw()
+}
+
+class Point {
+	x: Number
+	y: Number
+	
+	getDistance( pt : Point ) 
+	
+}
+
+Object <|-- Shape
+Shape <|-- Point
+
+@enduml
+	
