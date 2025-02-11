@@ -13,7 +13,7 @@ fs.readFile( "alice.txt", "utf-8",( err, content ) => {
 		console.error("Achtung, Datei konnte nicht geöffnet werden")
 	}
 	else {
-		console.log(content.substring(0,10))
+		console.log(content.replace(/[^a]/g, "").length)
 	}
 	
 })
