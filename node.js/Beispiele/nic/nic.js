@@ -16,6 +16,19 @@ ipv4.forEach( nic => {
 		return value & mask[index]
 	})
 	
+	/////////////////////////////////////////////
+	//
+	// 		Beispielerklärung für die Hosts 
+	//		 Nicht Bestandteil der Aufgabe
+	//
+	/////////////////////////////////////////////
+	// nic.netmask		"255.255.240.0"
+	// .split("")		[255,255,240,0]
+	// .map( value ) 	[11111111, 11111111, 11110000, 0]
+	// .padStart()  	[11111111, 11111111, 11110000, 00000000]
+	// .map( f )		[ 0, 0 , 4, 8 ]
+	// .reduce			12
+	// Ergebnis:		1 << 12 == 4096
 	
 	const hosts =  1 << nic.netmask
 						.split(".")
@@ -34,7 +47,7 @@ ipv4.forEach( nic => {
 	
 	console.log("IPv4" , nic.address)
 	console.log("Mask" , nic.netmask)
-	console.log("Number of Hosts:", hosts)
+	console.log("Number of Hosts:", hosts -2)
 	console.log("Network  :" , net.join("."))
 	console.log("Broadcast  :" , broadcast.join("."))
 	console.log("\n\n")
