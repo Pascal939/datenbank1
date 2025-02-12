@@ -1,4 +1,6 @@
 const fs = require("fs");
+const process = require("process")
+
 
 let totalfiles = 0
 
@@ -30,9 +32,17 @@ function read_directory( path ) {
 	})
 }
 
-read_directory("c:\\users\\svenp\\desktop\\")
-.then( bar => {
+if( process.argv.length < 3) {
+	console.error("usage: node readdir_subdirs.js PATH")
+}
+
+else {
 	
-	console.log(bar.flat().length)	
-})
-.catch( promise_error => console.error( "(Un)expected error" ) )
+	read_directory( process.argv.pop() )
+	.then( bar => {
+		
+		console.log(bar.flat().length)	
+	})
+	.catch( promise_error => console.error( "(Un)expected error" ) )
+	
+}
