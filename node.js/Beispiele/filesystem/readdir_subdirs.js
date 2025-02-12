@@ -24,15 +24,15 @@ function read_directory( path ) {
 				return
 			}
 			
-			Promise.all( promises ).then( data => {resolve(data)}) 
+			Promise.all( promises ).then( foo => {resolve(foo.flat())}) 
 			
 		})	
 	})
 }
 
 read_directory("c:\\users\\svenp\\desktop\\")
-.then( promise_files => {
+.then( bar => {
 	
-	console.log(promise_files.flat().length)	
+	console.log(bar.flat().length)	
 })
 .catch( promise_error => console.error( "(Un)expected error" ) )
