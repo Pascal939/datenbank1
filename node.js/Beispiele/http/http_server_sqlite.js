@@ -21,11 +21,11 @@ function getAllProducts() {
 		// Abfrage der Datenbank-Produkte, erhalte das Ergebnis als Array [rows]
 		//
 		db.all( `SELECT * FROM product`,  (err,rows) => {
-			
+			if(err) throw err;
 			//
 			// Erfülle das Promise
 			//			
-			resolve( rows) 
+			resolve(rows)
 		})
 		
 		//
@@ -33,6 +33,9 @@ function getAllProducts() {
 		//	
 		db.close()
 	})
+
+
+	// test
 }
 
 
